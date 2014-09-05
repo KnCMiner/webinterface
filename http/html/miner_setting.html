@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
+<head>
+	<title>KnCMiner - Mining</title>
+	<meta charset="UTF-8" />
+	<link href="/style.css" rel="stylesheet" type="text/css">
+	<link href="/grid.css" rel="stylesheet" type="text/css">
+	<link href="/type/type.css" rel="stylesheet" type="text/css">
+	<script src="/jquery-1.10.2.js"></script>
+	<script src="/json2.min.js"></script>
+	<script>
+		function renderNormalSettnings() {
+			pools = config.pools;
+			$('#pools').empty();
+			$.each(config.pools, function(i, pool) {
+				renderPoolForm(pool);
+			});
+
+			/* Legacy config files might contain both api-allow and api-network. Get rid of it */
+			if ('api-network' in config && 'api-allow' in config) {
+				delete config['api-network'];
+				submitAndGetConfig();
+			}
+
+			$('#r_mgmt').val(extra_config["remote_mgmt"]);
+			refreshDelPoolVisibility();
+		}
+		
+		function renderPoolForm (pool) {
+			var poolwrapper = $('<div class="span_12_of_12 pool"><div class="pool-form"></div></div>');
+			var poolForm = poolwrapper.find('.pool-form');
+			poolForm.append('<input type="button" value="delete" class="del-btn"></input>');
+			poolForm.append('<label>Pool url</label>');
+			var url;
+			var quota;
+			if (typeof(pool.url) == 'undefined') {
+				var re = /^([0-9]+);(.+)$/;
+				var match = re.exec(pool.quota);
+				quota = match[1];
+				url = match[2];
+			} else {
+				quota = '';
+				url = pool.url;
+			}
+			$('<input type="text" name="url"/>')
+				.val(url)
+				.appendTo(poolForm);
+			poolForm.append('<br /><label>Quota</label>');
+			$('<input type="text" name="quota"/>')
+				.val(quota)
+				.appendTo(poolForm);
+			poolForm.append('<br /><label>Account</label>');
+			$('<input type="text" name="user"/>')
+				.val(pool.user)
+				.appendTo(poolForm);
+			poolForm.append('<br /><label>Password</label>');
+			$('<input type="text" name="pass"/>')
+				.val(pool.pass)
+				.appendTo(poolForm);
+			$('#pools').append(poolwrapper);
+
+			var delBtn = poolwrapper.find('.del-btn');
+			delBtn.click(function(e) {
+				$(this).closest('.pool').remove();
+				setEditMode(true);
+				refreshDelPoolVisibility();
+			});
+		}
+		
+		function addPool() {
+			var newPool = {
+				url: "",
+				user: "",
+				pass: ""
+			};
+			renderPoolForm(newPool);
+			setEditMode(true);
+			refreshDelPoolVisibility();
+		}
+		
+		function refreshDelPoolVisibility() {
+			var poolCount = $('#pools').children().length;
+			if (poolCount > 1) {
+				$('.del-btn').show();
+			} else {
+				$('.del-btn').hide();
+			}
+		}
+		
+		function submitAndGetConfig(doReset, resetType) {
+			var reqParamStr;
+			if (doReset) {
+				reqParamStr = resetType;
+			} else if (config) {
+				reqParamStr=""
+				for (var param in extra_config) {
+					reqParamStr += param + "=" + encodeURIComponent(extra_config[param]) + "\n";
+				}
+				reqParamStr += JSON.stringify(config, undefined, 2);
+			} else {
+				reqParamStr = "null";
+			}
+			var jqxhr = $.post("/cgi-bin/fetch_cgminer_conf.cgi", reqParamStr, function(configStr) {
+				var configLines = configStr.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
+				
+				var res;
+				while (res = configLines[0].match(/([^{].*)="?([^"]*)"?/)) {
+					extra_config[res[1]] = res[2]
+					configLines.shift();
+				}
+
+				config = JSON.parse(configLines.join("\n"));
+				try
+				{
+					renderNormalSettnings();
+
+					// Set failover strategy according to config
+					$('select[name="strategy"]').val((config && config['load-balance']) ? 1 : 0);
+				}
+				catch(err)
+				{
+					$('#manualText').val(JSON.stringify(config, undefined, 2));
+					manualMode();
+					alert('Invalid Miner configuration file. Edit manually or reset to default.');
+				}
+				setEditMode(false);
+			}, "text");
+			jqxhr
+				.fail(function() {
+					alert('Ajax Error');
+				});
+		}
+		
+		function createConfig() {
+			config.pools = [];
+			$('#pools').children().each(function(index, element) {
+				var el = $(element);
+				var newPool; 
+				var url = el.find('input[name="url"]').val();
+				var quota = el.find('input[name="quota"]').val();
+				if (quota !== '' /*url.match && url.match(/^\d+;/)*/) { // url start with a quota ?
+					newPool = {
+						quota: quota + ';' + el.find('input[name="url"]').val(),
+						user: el.find('input[name="user"]').val(),
+						pass: el.find('input[name="pass"]').val()
+					}
+				} else {
+					newPool = {                                         
+						url: el.find('input[name="url"]').val(),
+						user: el.find('input[name="user"]').val(),
+						pass: el.find('input[name="pass"]').val()
+					}
+				}
+				config.pools.push(newPool);
+			});
+
+			if($('select[name="strategy"]').val() === '1') {
+				config['load-balance'] = true;
+			} 
+			else if(config['load-balance']) {
+				delete config['load-balance'];
+			}
+			
+			if (extra_config['remote_mgmt'] != "") {
+				if (!('api-allow' in config))
+					config['api-allow'] = 'W:0/0';
+			} else {
+				delete config['api-allow'];
+			}
+		}
+		
+		
+		function submitConfig() {
+			createConfig();
+			submitAndGetConfig();
+		}
+		
+		function setEditMode(editing) {
+			if (editing != editMode) {
+				if (editing) {
+					editMode = true;
+					$("#saveBtn").removeAttr('disabled');
+					$("#manualSaveBtn").removeAttr('disabled');
+				} else {
+					editMode = false;
+					$("#saveBtn").attr('disabled', 'disabled');
+					$("#manualSaveBtn").attr('disabled', 'disabled');
+				}
+			}
+		}
+
+		function setRestartMode(restart) {
+			if (!restartMode) {
+				if (restart) {
+					restartMode = true;
+					$("#restartCGMinerBtn").attr('disabled', 'disabled');
+					$("#manualRestartCGMinerBtn").attr('disabled', 'disabled');
+					var int=self.setTimeout(function(){
+						$("#restartCGMinerBtn").removeAttr('disabled');
+						$("#manualRestartCGMinerBtn").removeAttr('disabled');
+						restartMode = false;
+					}, 5000);
+				}
+				else {
+					$("#restartCGMinerBtn").removeAttr('disabled');
+					$("#manualRestartCGMinerBtn").removeAttr('disabled');
+				}
+			}
+		}
+		
+		function manualMode() {
+			$('#configSettings').hide();
+			$('#configManualSettings').show();
+			$('#gotoNormalModeBtn').removeAttr('disabled');
+			setRestartMode(false);
+		}
+		
+		function normalMode() {
+			$('#configSettings').show();
+			$('#configManualSettings').hide();
+			setRestartMode(false);
+		}
+		
+		$(document).ready(function() {
+			
+			config = null;
+			extra_config = new Object();
+			editMode = false;
+			restartMode = false;
+			setRestartMode(false);
+			submitAndGetConfig();
+			
+			$('#configManualSettings').hide();
+			
+			// Wire up event handlers
+			
+			$('#addBtn').click(function(e) {
+				e.preventDefault();
+				addPool();
+			});
+			
+			$('#configSettings').on('change keyup', function() {
+				setEditMode(true);
+			});
+			
+			$('#configManualSettings').on('change keyup', function() {
+				// try if it's well-formed json
+				try
+				{
+					config = JSON.parse($('#manualText').val());
+					$('#gotoNormalModeBtn').removeAttr('disabled');
+					setEditMode(true);
+				}
+				catch(err)
+				{
+					$('#gotoNormalModeBtn').attr('disabled', 'disabled');
+					setEditMode(false);
+				}
+			});
+			
+			$('#saveBtn').click(function(e) {
+				e.preventDefault();
+				submitConfig(); 
+			});
+			
+			$('#manualSaveBtn').click(function(e) {
+				e.preventDefault();
+				submitAndGetConfig();
+			});
+			
+			$('.factoryDefaultBtn').click(function(e) {
+				e.preventDefault();
+				normalMode();
+				submitAndGetConfig(true, "FactoryDefault");
+			});
+
+			$('#restartCGMinerBtn').click(function(e) {
+				e.preventDefault();
+				setRestartMode(true);
+				submitAndGetConfig(true, "RestartCGMiner"); 
+			});
+
+			$('#manualRestartCGMinerBtn').click(function(e) {
+				e.preventDefault();
+				setRestartMode(true);
+				submitAndGetConfig(true, "RestartCGMiner"); 
+			});
+
+			$('#gotoNormalModeBtn').click(function() {
+				normalMode();
+				renderNormalSettnings();
+			});
+			
+			$('#gotoManualModeBtn').click(function() {
+				createConfig();
+				$('#manual_r_mgmt').val($('#r_mgmt').val());
+				$('#manualText').val(JSON.stringify(config, undefined, 2));
+				manualMode();
+			});
+
+			$('#r_mgmt').change(function() {
+				extra_config['remote_mgmt'] = $('#r_mgmt').val();
+			});
+			$('#manual_r_mgmt').change(function() {
+				extra_config['remote_mgmt'] = $('#manual_r_mgmt').val();
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<div id="wrapper">
+		<header>
+                <div id="logo" class="col span_6_of_12">
+                    <img src="/images/logo.png" alt="KnCMiner logo">
+                </div>
+                <nav class="section box">
+                    <div id="sub_nav" class="span_12_of_12">
+                        <a href="/">Status</a>
+                        <a href="/miner_setting.html" class="active">Mining</a>
+                        <a href="/cgi-bin/get_network_conf.cgi">Networking</a>
+                        <a href="/services_conf.html">Services</a>
+                        <a href="/system_management.cgi">System</a>
+                        <a href="/advanced_settings.html">Advanced</a>
+                        <a href="/firmware_upgrade.html">Upgrade</a>
+                    </div>
+                </nav>
+    
+            </header>
+            <div id="header" class="section">
+                <div class="span_12_of_12">
+                    <div class="xbox box">
+                        <div class="span_12_of_12">
+                            <h1>Miner Settings</h1>
+                            <p>
+                                Edit mining parameters, press "Save changes" to save settings on miner,</br> and press "Restart Miner" to apply changes.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="span_12_of_12">
+                    <div id="configSettings" class="xbox news">
+                        <button id="addBtn">Add pool</button>
+                        <h1>Pools</h1>
+                        <div id="pools" class="box"></div>
+                        <div>
+                        	<label for="strategy">Strategy</label>
+                        	<select name="strategy">
+                        		<option value="0">Failover</option>
+														<option value="1">Load balance</option>
+                        	</select>
+                        </div>
+                        <div>
+<label for="r_mgmt">Miner Remote Management Server(s)</label>
+<input type="text" name="r_mgmt" id="r_mgmt">
+</div>
+                        <div class="form-actions">
+                          <button id="gotoManualModeBtn" type="button">Manual edit mode</button>
+                          <button id="saveBtn" type="button" disabled="disabled">Save changes</button>
+                          <button id="restartCGMinerBtn" type="button" disabled="disabled">Restart Miner</button>
+                          <button class="factoryDefaultBtn" type="button">Reset to Factory Defaults</button>
+                        </div>
+                    </div>
+                    <div id="configManualSettings" class="xbox news">
+                        <h1>Manual Configuration File Editor</h1><br/>
+                        <div class="section">
+                          <div class="box">
+                            <div class="col span_8_of_12">
+                              <textarea id="manualText" rows="30" cols="80"></textarea>
+                            </div>
+                          </div>
+                          <div class="col span_4_of_12">
+                            <p>Edit file manaully, remember to use proper JSON syntax otherwise the file can not be saved.</p>
+                          </div>
+                        </div>
+                        <div class="form-actions col span_12_of_12">
+                        <div>
+<label for="manual_r_mgmt">Miner Remote Management Server(s)</label>
+<input type="text" name="manual_r_mgmt" id="manual_r_mgmt">
+</div>
+                          <button id="gotoNormalModeBtn" type="button" disabled="disabled">Normal edit mode</button>
+                          <button id="manualSaveBtn" type="button" disabled="disabled">Save changes</button>
+                          <button id="manualRestartCGMinerBtn" type="button" disabled="disabled">Restart Miner</button>
+                          <button class="factoryDefaultBtn" type="button">Reset to Factory Defaults</button>
+                        </div>
+                        <div class="section"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</body>
+</html>
