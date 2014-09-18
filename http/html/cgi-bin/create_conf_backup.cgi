@@ -3,14 +3,10 @@
 file=backupKNC_`date +%Y-%m-%d_%H%M%S`.tar
 dir=/tmp/backup$$
 bkup_files=" \
-    advanced.conf \
     cgminer.conf \
-    dropbear \
-    dropbear_rsa_host_key \
     led-blink.conf \
     lighttpd-htdigest.user \
     miner.conf \
-    network.conf \
     shadow \
 "
 
@@ -99,7 +95,7 @@ cat <<EOT
 </form>
 </div>
 <div class="col span_6_of_12">                                        
-<form action="/firmware_upgrade.html">                                                         
+<form action="/backup.html">
 <button style="float: right" type="submit" class="btn btn-lg btn-secondary">Go Back</button>
 </form>                                                                        
 </div>

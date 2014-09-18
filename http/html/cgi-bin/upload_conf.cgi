@@ -92,7 +92,7 @@ cat <<EOT
 </form>
 </div>
 <div class="col span_6_of_12">                                        
-<form action="/firmware_upgrade.html">                                                         
+<form action="/backup.html">
 <button style="float: right" type="submit" class="btn btn-lg btn-secondary">Go Back</button>
 </form>                                                                        
 </div>

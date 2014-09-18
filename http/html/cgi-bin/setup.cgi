@@ -43,14 +43,6 @@ if [ "$remote_mgmt" = "" ]; then
 	exit 0
 fi
 
-hash=`echo -n "${REMOTE_USER}:KnC Miner configuration:$curr_pw" | md5sum | cut -b -32` 
-echo "${REMOTE_USER}:KnC Miner configuration:$hash" > /tmp/validate_pw.tmp.$$
-diff /config/lighttpd-htdigest.user /tmp/validate_pw.tmp.$$ > /dev/null
-if [ $? -ne 0 ] ; then
-	show_msg "Wrong password"
-	exit 0
-fi
-
 # Need to show new page before actually apply'ing new password
 show_msg "Saving settings" /
 

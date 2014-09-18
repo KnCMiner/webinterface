@@ -18,11 +18,8 @@
 				<div id="sub_nav" class="span_12_of_12">
 					<a href="/">Status</a>
 					<a href="/miner_setting.html">Mining</a>
-					<a href="/cgi-bin/get_network_conf.cgi">Networking</a>
-					<a href="/services_conf.html">Services</a>
 					<a href="/system_management.cgi" class="active">System</a>
-					<a href="/advanced_settings.html">Advanced</a>
-					<a href="/firmware_upgrade.html">Upgrade</a>
+					<a href="/backup.html">Backup</a>
 				</div>
 			</nav>
 
@@ -40,7 +37,7 @@
 			</div>
 		</div>
 		<div class="section">
-			<div class="col span_7_of_12">
+			<div class="col span_12_of_12">
 				<div class="xbox news">
 					<form action="/cgi-bin/passwd.cgi" class="span_7_of_12">
 						<div class="box">
@@ -50,18 +47,6 @@
 							<label>Re-enter New Password</label><input type="password" name="new_pw_ctrl" placeholder="Re-enter New Password"><br>
 						</div>
 						<button type="submit" class="btn btn-lg btn-primary">Apply</button>						
-					</form>
-				</div>
-			</div>
-			<div class="col span_5_of_12">
-				<div class="xbox news">
-					<p>Reset System Configuration</p>
-					<form action="/cgi-bin/reset_conf.cgi" class="span_5_of_12">
-						<button type="submit" class="btn btn-lg btn-primary">Reset</button>
-					</form><br>
-					<p>Reboot Miner</p>
-					<form action="/cgi-bin/reboot.cgi" class="span_5_of_12">
-						<button type="submit" class="btn btn-lg btn-primary">Reboot</button>
 					</form>
 				</div>
 			</div>

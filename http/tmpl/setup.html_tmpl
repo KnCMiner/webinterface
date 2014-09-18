@@ -55,14 +55,13 @@ function ValidateForm()
 				<form class="span_12_of_12" method="GET" action="/cgi-bin/setup.cgi" name="param">
 				<div class="box block">
 				<label>Admin account</label><input type=text name=admin><br>
-				<label>Current Password</label><input type="password" name="current_pw" placeholder="Current Password"><br>
 				<label>New Password</label><input type="password" name="new_pw" placeholder="New Password"><br>
 				<label>Re-enter New Password</label><input type="password" name="new_pw_ctrl" placeholder="Re-enter New Password"><br>
 				<label>Management network</label><input type="text" name="remote_mgmt" value="LAN RFC1918 #%#REMOTE_ADMIN#%#" placeholder="Space separated"><br>
 Management is list of addresses/networks with access to web console and SSH (if enabled). Use LAN for local LAN addresses only (same network) or RFC1918 for private networks.<br>
 WARNING: If you are doing the setup remotely then make sure to add your address here.<br>Your address is #%#REMOTE_ADDR#%#
 				</div>
-				<button type="submit" class="btn btn-lg btn-primary" onclick=" return ValidateForm()">Save</button>						
+				<button type="submit" class="btn btn-lg btn-primary" onclick=" return ValidateForm()">Save</button>
 				</div>
 				</form>
 				</div>
