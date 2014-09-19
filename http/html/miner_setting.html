@@ -16,13 +16,6 @@
 				renderPoolForm(pool);
 			});
 
-			/* Legacy config files might contain both api-allow and api-network. Get rid of it */
-			if ('api-network' in config && 'api-allow' in config) {
-				delete config['api-network'];
-				submitAndGetConfig();
-			}
-
-			$('#r_mgmt').val(extra_config["remote_mgmt"]);
 			refreshDelPoolVisibility();
 		}
 		
@@ -160,13 +153,6 @@
 			else if(config['load-balance']) {
 				delete config['load-balance'];
 			}
-			
-			if (extra_config['remote_mgmt'] != "") {
-				if (!('api-allow' in config))
-					config['api-allow'] = 'W:0/0';
-			} else {
-				delete config['api-allow'];
-			}
 		}
 		
 		
@@ -293,16 +279,8 @@
 			
 			$('#gotoManualModeBtn').click(function() {
 				createConfig();
-				$('#manual_r_mgmt').val($('#r_mgmt').val());
 				$('#manualText').val(JSON.stringify(config, undefined, 2));
 				manualMode();
-			});
-
-			$('#r_mgmt').change(function() {
-				extra_config['remote_mgmt'] = $('#r_mgmt').val();
-			});
-			$('#manual_r_mgmt').change(function() {
-				extra_config['remote_mgmt'] = $('#manual_r_mgmt').val();
 			});
 		});
 	</script>
@@ -350,10 +328,6 @@
 														<option value="1">Load balance</option>
                         	</select>
                         </div>
-                        <div>
-<label for="r_mgmt">Miner Remote Management Server(s)</label>
-<input type="text" name="r_mgmt" id="r_mgmt">
-</div>
                         <div class="form-actions">
                           <button id="gotoManualModeBtn" type="button">Manual edit mode</button>
                           <button id="saveBtn" type="button" disabled="disabled">Save changes</button>
@@ -374,10 +348,6 @@
                           </div>
                         </div>
                         <div class="form-actions col span_12_of_12">
-                        <div>
-<label for="manual_r_mgmt">Miner Remote Management Server(s)</label>
-<input type="text" name="manual_r_mgmt" id="manual_r_mgmt">
-</div>
                           <button id="gotoNormalModeBtn" type="button" disabled="disabled">Normal edit mode</button>
                           <button id="manualSaveBtn" type="button" disabled="disabled">Save changes</button>
                           <button id="manualRestartCGMinerBtn" type="button" disabled="disabled">Restart Miner</button>
