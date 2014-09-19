@@ -55,6 +55,7 @@ echo "${admin}:KnC Miner configuration:$hash" > \
     /config/lighttpd-htdigest.user
 
 printf "$new_pw\n$new_pw_ctrl" | passwd root > /dev/null
+printf "$new_pw\n$new_pw_ctrl" | passwd pi > /dev/null
 if [ $? -eq 0 ] ; then
     rm -f /config/shadow
     mv /etc/shadow /config/shadow
