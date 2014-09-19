@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <head>
-	<title>KnCMiner - System</title>
+	<title>KnCMiner - Reset to Factory Defaults</title>
 	<meta charset="UTF-8" />
 	<link href="/style.css" rel="stylesheet" type="text/css">
 	<link href="/grid.css" rel="stylesheet" type="text/css">
@@ -29,9 +29,9 @@
 			<div class="span_12_of_12">
 				<div class="xbox box">
 					<div class="span_7_of_12">
-						<h1>System Settings</h1>
+						<h1>Reset to factory defaults</h1>
 						<p>
-							Change password used to login to the web management system.
+							Reset to factory defaults will forget all the settings You've made.
 						</p>
 					</div>
 				</div>
@@ -40,26 +40,10 @@
 		<div class="section">
 			<div class="col span_12_of_12">
 				<div class="xbox news">
-					<form action="/cgi-bin/passwd.cgi" class="span_12_of_12">
+					<form action="/cgi-bin/reset_factory_settings.cgi" class="span_12_of_12" method='get'>
 						<div class="box">
-							<label>Current Password</label><input type="password" name="current_pw" placeholder="Current Password"><br>
-							<label>Login</label><input type="text" name="admin" value="#%#REMOTE_USER#%#" placeholder="New login name"><br>
-							<label>New Password</label><input type="password" name="new_pw" placeholder="New Password"><br>
-							<label>Re-enter New Password</label><input type="password" name="new_pw_ctrl" placeholder="Re-enter New Password"><br>
-						</div>
-						<button type="submit" class="btn btn-lg btn-primary">Apply</button>						
-					</form>
-				</div>
-			</div>
-		</div>
-		<div class="section">
-			<div class="col span_12_of_12">
-				<div class="xbox news">
-					<form action="/cgi-bin/reset_factory_settings.cgi" class="span_12_of_12">
-						<div class="box">
-							Reset to factory settings. Handle with care.
-						</div>
-						<button type="submit" class="btn btn-lg btn-primary">Reset to factory settings</button>
+						<input type='hidden' name='cookie' value='#%#COOKIE#%#'>
+						<button type="submit" class="btn btn-lg btn-primary">Yes, reset</button>
 					</form>
 				</div>
 			</div>
