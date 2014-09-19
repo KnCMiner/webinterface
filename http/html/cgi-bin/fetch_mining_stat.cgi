@@ -4,7 +4,7 @@
 asic_status="<table border=\"1\"><tr><th style=\"text-align:center\">ASIC slot</th><th style=\"text-align:center\">Temperature</th><th style=\"text-align:center\">DC/DC avg temp</th><th style=\"text-align:center\">Clock</th><th style=\"text-align:center\">Type</th></tr>"
 
 asic_stat_file=/var/run/stats.knc.$$
-{ waas -g all-asic-info 2>/dev/null; cat /etc/revision;} | get_asic_stats.awk >$asic_stat_file 2>/dev/null
+{ waas -g all-asic-info 2>/dev/null; cat /etc/revision;} | /home/pi/knc-asic/RPi_system/get_asic_stats.awk >$asic_stat_file 2>/dev/null
 
 while read status ; do
   set -- $status
@@ -28,12 +28,12 @@ asic_status="${asic_status}</table>"
 
 appname=
 showname=
-killall -0 cgminer 2&> /dev/null
+killall -0 cgminer >/dev/null 2> /dev/null
 if [ $? = 0 ] ; then
 	appname=cgminer
 	showname=CGMiner
 else
-	killall -0 bfgminer 2&> /dev/null
+	killall -0 bfgminer >/dev/null 2> /dev/null
 	if [ $? = 0 ] ; then
 		appname=bfgminer
 		showname=BFGMiner
@@ -53,7 +53,7 @@ fi
 
 
 if [ "`echo $proc_running | grep Running`" != "" ] ; then
-    data=`/usr/bin/api-cgminer -o`
+    data=`/home/pi/bfgminer/bfgminer-rpc -o`
     
     # check that connect to miner was ok
     if [ "$data" = "Socket connect failed: Connection refused" ] ; then
@@ -69,8 +69,8 @@ if [ "`echo $proc_running | grep Running`" != "" ] ; then
 	set -- $d
 	if [ "$1" = "When" ] ; then
 	    probe_time=`date -d @"$2"`
-	elif [ "$1" = "MHS 1m" ] ; then
-            hashrate="`expr ${2/.*} / 1000` Gh/s"
+	elif [ "$1" = "MHS 20s" ] ; then
+            hashrate="${2} Mh/s"
 	elif [ "$1" = "Work Utility" ] ; then
 	    work_utility=${2/.*}
 	elif [ "$1" = "Difficulty Accepted" ] ; then
