@@ -16,6 +16,7 @@ get_current_config()
     if [ ! -f /config/advanced.conf ] ; then
 	#let waas  create conf file with defaults
 	waas -d -o /config/advanced.conf >/dev/null 2>&1
+	/etc/init.d/bfgminer.sh restart
     fi
     cat /config/advanced.conf
 }
@@ -49,9 +50,6 @@ if [ "$input" = "fetch-advanced-settings-and-ranges" ] ; then
     fetch_advanced_settings_and_ranges
 elif [ "$input" = "FactoryDefault" ] ; then
     rm -f /config/advanced.conf >/dev/null 2>&1
-    killall monitordcdc >/dev/null 2>&1
-    killall monitordcdc.ge >/dev/null 2>&1
-    killall monitordcdc.ericsson >/dev/null 2>&1
     get_current_config
 elif [ "$input" = "get-current-status" ] ; then
     waas -g all-asic-info 
@@ -62,9 +60,7 @@ elif [ "$input" != "null" ] && [ "$input" != "" ] ; then
     echo "$input" > /config/advanced.conf
     # let waas apply settings
     waas -c /config/advanced.conf >/dev/null 2>&1
-    killall monitordcdc >/dev/null 2>&1
-    killall monitordcdc.ge >/dev/null 2>&1
-    killall monitordcdc.ericsson >/dev/null 2>&1
+    /etc/init.d/bfgminer.sh restart
     get_current_config
 fi
 
