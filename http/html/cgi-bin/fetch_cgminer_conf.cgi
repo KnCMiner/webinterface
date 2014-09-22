@@ -54,7 +54,7 @@ if [ "${input:-null}" != "null" ] ; then
 	rm -f "$MINER_CONF"
 	minerconfstart=1
     elif [ "$input" = "RestartCGMiner" ] ; then
-	/etc/init.d/cgminer.sh restart > /dev/null
+	/etc/init.d/bfgminer.sh restart > /dev/null
     else
 	# Perhaps this needs to be re-validated as proper JSON,
 	# even though the web form will not allow to save

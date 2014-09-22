@@ -12,18 +12,6 @@ function ValidateForm()
     var ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
     var netformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/(3[0-2]|[12][0-9]|[0-9])$/;
 
-    document.forms["param"]["remote_mgmt"].value = document.forms["param"]["remote_mgmt"].value.trim();
-    
-    var mgmt=document.forms["param"]["remote_mgmt"].value.split(" ");
-    for (var i = 0; i < mgmt.length; i++) {
-	var x = mgmt[i];
-	if (!x.match(ipformat) && !x.match(netformat) && x != "LAN" && x != "RFC1918" ) {
-	    alert("Invalid management address '"+x+"'");
-	    document.param.remote_mgmt.focus();
-	    return false;
-	}
-    }
-
     // Ok to submit
     document.param.submit();
 }
@@ -57,9 +45,6 @@ function ValidateForm()
 				<label>Admin account</label><input type=text name=admin><br>
 				<label>New Password</label><input type="password" name="new_pw" placeholder="New Password"><br>
 				<label>Re-enter New Password</label><input type="password" name="new_pw_ctrl" placeholder="Re-enter New Password"><br>
-				<label>Management network</label><input type="text" name="remote_mgmt" value="LAN RFC1918 #%#REMOTE_ADMIN#%#" placeholder="Space separated"><br>
-Management is list of addresses/networks with access to web console and SSH (if enabled). Use LAN for local LAN addresses only (same network) or RFC1918 for private networks.<br>
-WARNING: If you are doing the setup remotely then make sure to add your address here.<br>Your address is #%#REMOTE_ADDR#%#
 				</div>
 				<button type="submit" class="btn btn-lg btn-primary" onclick=" return ValidateForm()">Save</button>
 				</div>

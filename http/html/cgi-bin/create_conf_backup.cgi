@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
 file=backupKNC_`date +%Y-%m-%d_%H%M%S`.tar
+rm -f /www/pages/backupKNC_*
 dir=/tmp/backup$$
 bkup_files=" \
     cgminer.conf \
