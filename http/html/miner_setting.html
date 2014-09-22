@@ -9,7 +9,7 @@
 	<script src="/jquery-1.10.2.js"></script>
 	<script src="/json2.min.js"></script>
 	<script>
-		function renderNormalSettnings() {
+		function renderNormalSettings() {
 			pools = config.pools;
 			$('#pools').empty();
 			$.each(config.pools, function(i, pool) {
@@ -105,7 +105,7 @@
 				config = JSON.parse(configLines.join("\n"));
 				try
 				{
-					renderNormalSettnings();
+					renderNormalSettings();
 
 					// Set failover strategy according to config
 					$('select[name="strategy"]').val((config && config['load-balance']) ? 1 : 0);
@@ -274,7 +274,7 @@
 
 			$('#gotoNormalModeBtn').click(function() {
 				normalMode();
-				renderNormalSettnings();
+				renderNormalSettings();
 			});
 			
 			$('#gotoManualModeBtn').click(function() {
