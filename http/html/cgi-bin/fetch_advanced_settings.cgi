@@ -16,7 +16,7 @@ get_current_config()
     if [ ! -f /config/advanced.conf ] ; then
 	#let waas  create conf file with defaults
 	waas -d -o /config/advanced.conf >/dev/null 2>&1
-	/etc/init.d/bfgminer.sh restart
+	/etc/init.d/bfgminer.sh restart >/dev/null 2>&1
     fi
     cat /config/advanced.conf
 }
@@ -60,7 +60,7 @@ elif [ "$input" != "null" ] && [ "$input" != "" ] ; then
     echo "$input" > /config/advanced.conf
     # let waas apply settings
     waas -c /config/advanced.conf >/dev/null 2>&1
-    /etc/init.d/bfgminer.sh restart
+    /etc/init.d/bfgminer.sh restart >/dev/null 2>&1
     get_current_config
 fi
 
