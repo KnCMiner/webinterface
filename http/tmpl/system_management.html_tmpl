@@ -19,7 +19,7 @@
 					<a href="/">Status</a>
 					<a href="/miner_setting.html">Mining</a>
 					<a href="/system_management.cgi" class="active">System</a>
-                                        <a href="/advanced_settings.html">Advanced</a>
+					<a href="/advanced_settings.html">Advanced</a>
 					<a href="/backup.html">Backup</a>
 				</div>
 			</nav>
@@ -55,11 +55,34 @@
 		<div class="section">
 			<div class="col span_12_of_12">
 				<div class="xbox news">
+                                        <p>Reset to factory settings</p>
 					<form action="/cgi-bin/reset_factory_settings.cgi" class="span_12_of_12">
 						<div class="box">
-							Reset to factory settings. Handle with care.
+							Handle with care.
 						</div>
 						<button type="submit" class="btn btn-lg btn-primary">Reset to factory settings</button>
+					</form>
+				</div>
+				<div class="xbox news">
+					<p>Firmware Upgrade</p>
+					<form action="/cgi-bin/upgrade.cgi" class="span_12_of_12" enctype="multipart/form-data" method="post">
+						<div class="box">
+							<input type="file" name="datafile" size="40">
+							<div>
+								<button type="submit" class="btn btn-lg btn-primary">Upload</button>
+							</div>
+						</div>
+					</form>
+				</div>
+
+			</div>
+		</div>
+		<div class="section">
+			<div class="col span_12_of_12">
+				<div class="xbox news">
+					<p>Reboot device</p>
+					<form action="/cgi-bin/reboot.cgi" class="span_12_of_12">
+						<button type="submit" class="btn btn-lg btn-primary">Reboot</button>
 					</form>
 				</div>
 			</div>

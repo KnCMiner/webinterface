@@ -11,25 +11,23 @@
 # ^M    <--------- extra empty line
 # -----------------------------29995809218093749221856446032--^M
 
-file=/tmp/$$
+tmp_path=/tmp/$$
 
 trap atexit 0
 
 atexit() {
-	rm -rf $file
-	umount $file.boot 2>/dev/null || true
-	rmdir $file.boot 2>/dev/null || true
-	sync
+	rm -rf $tmp_path*
 	if [ ! $ok ]; then
 	    print "<h1>System upgrade failed</h1>"
+	    printf "%s" "$error_message"
+	    printf "</div>"
+	    printf "</div>"
+	    printf "</div>"
+	    printf "</div>"
+	    printf "</div>"
+	    printf "</body>"
+	    printf "</html>"
 	fi
-	printf "</div>"
-	printf "</div>"
-	printf "</div>"
-	printf "</div>"
-	printf "</div>"
-	printf "</body>"
-	printf "</html>"
 }
 
 CR=`printf '\r'`
@@ -73,22 +71,23 @@ while read -r line; do
     test x"$line" = x"$CR" && break
 done
 
-mkdir $file
-cd $file
-tar zxf -
+
+cat - >$tmp_path.tarball.tgz
+error_message="<p>Corrupt file or uploading error</p>"
+cat $tmp_path.tarball.tgz | gunzip >$tmp_path.tarball 2>/dev/null
+mkdir $tmp_path
+cd $tmp_path
+tar xf $tmp_path.tarball || exit
 if [ -f runme.sh ]; then
 	sh runme.sh
 else
-    mkdir $file.boot
-    mount /dev/mmcblk0p1 $file.boot
-    cp * $file.boot/
-    umount $file.boot
-    sync
+	error_message="<p>Wrong firmware file</p>"
+	exit
 fi
 
 cat <<EOT
 <h1>System upgraded</h1>
-<p>The upgrade installed successfully. Please reboot Miner to activate.</p>
+<p>The upgrade installed successfully. Please reboot to activate.</p>
 <div class="section">                                                         
 <div class="col span_6_of_12">
 <form action="/cgi-bin/reboot.cgi">
@@ -96,7 +95,7 @@ cat <<EOT
 </form>
 </div>
 <div class="col span_6_of_12">                                        
-<form action="/firmware_upgrade.html">                                                         
+<form action="/system_management.cgi">                                                         
 <button style="float: right" type="submit" class="btn btn-lg btn-secondary">Go Back</button>
 </form>                                                                        
 </div>
@@ -111,3 +110,4 @@ cat <<EOT
 EOT
 
 ok=1
+

@@ -1,7 +1,9 @@
 #!/bin/sh
 . ./cgi_lib.cgi
 
-show_msg "Rebooting System <br>(please wait for 90 seconds)" / 90000
+show_msg "Rebooting System <br>(wait for approx. 60 seconds)" / 60000
 
-reboot.safe
+sync
+sleep 1
+reboot
 
