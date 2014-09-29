@@ -4,7 +4,7 @@
 asic_status="<table border=\"1\"><tr><th style=\"text-align:center\">ASIC slot</th><th style=\"text-align:center\">Temperature</th><th style=\"text-align:center\">DC/DC avg temp</th><th style=\"text-align:center\">Clock</th><th style=\"text-align:center\">Type</th></tr>"
 
 asic_stat_file=/var/run/stats.knc.$$
-{ waas -g all-asic-info 2>/dev/null; cat /etc/revision;} | /home/pi/knc-asic/RPi_system/get_asic_stats.awk >$asic_stat_file 2>/dev/null
+/home/pi/knc-asic/RPi_system/get_asic_stats.awk /var/run/.waas_cache >$asic_stat_file 2>/dev/null
 
 while read status ; do
   set -- $status
