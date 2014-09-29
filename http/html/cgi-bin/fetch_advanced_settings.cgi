@@ -35,7 +35,7 @@ fetch_advanced_settings_and_ranges()
 
     # current status
     echo -n "\"current_status\" : "
-    waas -g all-asic-info 
+    /home/pi/knc-asic/RPi_system/waas_all_info_cached.awk /var/run/.waas_cache 2>/dev/null
     echo ","
 
     # current settings
@@ -52,7 +52,7 @@ elif [ "$input" = "FactoryDefault" ] ; then
     rm -f /config/advanced.conf >/dev/null 2>&1
     get_current_config
 elif [ "$input" = "get-current-status" ] ; then
-    waas -g all-asic-info 
+    /home/pi/knc-asic/RPi_system/waas_all_info_cached.awk /var/run/.waas_cache 2>/dev/null
 elif [ "$input" = "recreate-config-file" ] ; then
     waas -r -o /config/advanced.conf
     get_current_config
