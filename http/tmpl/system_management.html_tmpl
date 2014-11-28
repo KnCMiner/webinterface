@@ -64,7 +64,7 @@
 					</form>
 				</div>
 				<div class="xbox news">
-					<p>Firmware Upgrade</p>
+					<p>Firmware Upgrade (current revision: #%#KNC_RELEASE#%#)</p>
 					<form action="/cgi-bin/upgrade.cgi" class="span_12_of_12" enctype="multipart/form-data" method="post">
 						<div class="box">
 							<input type="file" name="datafile" size="40">
