@@ -39,7 +39,7 @@
 		</div>
 		<div class="section">
 			<div class="col span_12_of_12">
-				<div class="xbox news">
+				<div class="xbox box">
 					<form action="/cgi-bin/passwd.cgi" class="span_12_of_12">
 						<div class="box">
 							<label>Current Password</label><input type="password" name="current_pw" placeholder="Current Password"><br>
@@ -54,8 +54,8 @@
 		</div>
 		<div class="section">
 			<div class="col span_12_of_12">
-				<div class="xbox news">
-                                        <p>Reset to factory settings</p>
+				<div class="xbox box">
+                                        <h2>Reset to factory settings</h2>
 					<form action="/cgi-bin/reset_factory_settings.cgi" class="span_12_of_12">
 						<div class="box">
 							Handle with care.
@@ -63,8 +63,12 @@
 						<button type="submit" class="btn btn-lg btn-primary">Reset to factory settings</button>
 					</form>
 				</div>
-				<div class="xbox news">
-					<p>Firmware Upgrade (current revision: #%#KNC_RELEASE#%#)</p>
+			</div>
+		</div>
+		<div class="section">
+                        <div class="col span_12_of_12">
+				<div class="xbox box">
+					<h2>Firmware Upgrade (current revision: #%#KNC_RELEASE#%#)</h2>
 					<form action="/cgi-bin/upgrade.cgi" class="span_12_of_12" enctype="multipart/form-data" method="post">
 						<div class="box">
 							<input type="file" name="datafile" size="40">
@@ -79,11 +83,23 @@
 		</div>
 		<div class="section">
 			<div class="col span_12_of_12">
-				<div class="xbox news">
-					<p>Reboot device</p>
-					<form action="/cgi-bin/reboot.cgi" class="span_12_of_12">
-						<button type="submit" class="btn btn-lg btn-primary">Reboot</button>
-					</form>
+				<div class="xbox box">
+					<h2>Reboot/Shutdown device</h2>
+					<div class="section">
+						<div class="col span_12_of_12">
+							<div class="col span_6_of_12">
+								<form action="/cgi-bin/reboot.cgi" class="span_12_of_12">
+									<button type="submit" class="btn btn-lg btn-primary">Reboot</button>
+								</form>
+							</div>
+							<div class="col span_6_of_12">
+			                                        <form action="/cgi-bin/shutdown.cgi" class="span_12_of_12">
+			                                                <button type="submit" class="btn btn-lg btn-primary">Shutdown</button>
+			                                        </form>
+							</div>
+						</div>
+					</div>
+					<div class="section"></div>
 				</div>
 			</div>
 		</div>
