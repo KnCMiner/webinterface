@@ -10,6 +10,11 @@
 	<script src="/json2.min.js"></script>
 	<script>
 		function renderNormalSettings() {
+			N = (config && config['scrypt-n']) ? parseInt(config['scrypt-n']) : 10;
+			if (isNaN(N) || (N < 10) || (N > 19))
+				N = 10;
+			$('select[name="Nfactor"]').val(N);
+
 			pools = config.pools;
 			$('#pools').empty();
 			$.each(config.pools, function(i, pool) {
@@ -17,6 +22,8 @@
 			});
 
 			refreshDelPoolVisibility();
+
+			$('select[name="strategy"]').val((config && config['load-balance']) ? 1 : 0);
 		}
 		
 		function renderPoolForm (pool) {
@@ -106,9 +113,6 @@
 				try
 				{
 					renderNormalSettings();
-
-					// Set failover strategy according to config
-					$('select[name="strategy"]').val((config && config['load-balance']) ? 1 : 0);
 				}
 				catch(err)
 				{
@@ -153,6 +157,11 @@
 			else if(config['load-balance']) {
 				delete config['load-balance'];
 			}
+
+			N = parseInt($('select[name="Nfactor"]').val());
+			if (isNaN(N) || (N < 10) || (N > 19))
+				N = 10;
+			config['scrypt-n'] = N;
 		}
 		
 		
@@ -318,6 +327,21 @@
             <div class="section">
                 <div class="span_12_of_12">
                     <div id="configSettings" class="xbox news">
+			<div class="box">
+				<label for="Nfactor">Scrypt N-factor</label>
+				<select name="Nfactor">
+					<option value="10">10 (scrypt)</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+				</select>
+			</div>
                         <button id="addBtn">Add pool</button>
                         <h1>Pools</h1>
                         <div id="pools" class="box"></div>
