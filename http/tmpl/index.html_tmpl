@@ -47,9 +47,7 @@
 		<div id="header" class="section">
 			<div class="span_12_of_12">
 				<div class="xbox box">
-					<div class="span_7_of_12">
-						<h1>Miner Status</h1>
-					</div>
+					<h1>Miner Status [#%#HOSTNAME#%#]</h1>
 				</div>
 			</div>
 		</div>

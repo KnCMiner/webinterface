@@ -49,6 +49,11 @@
 						</div>
 						<button type="submit" class="btn btn-lg btn-primary">Apply</button>						
 					</form>
+					<br>
+					<form action="/cgi-bin/new_hostname.cgi" class="span_12_of_12">
+							<label>Hostname</label><input type="text" name="hostname" value="#%#HOSTNAME#%#" placeholder="New hostname"><br>
+						<button type="submit" class="btn btn-lg btn-primary">Change Hostname</button>
+					</form>
 				</div>
 			</div>
 		</div>
