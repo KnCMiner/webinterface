@@ -28,7 +28,8 @@
 
 			var dieFreqTemplate = $('<select/>');
 			$.each(config.valid_die_frequencies, function(i, frequency) {
-				dieFreqTemplate.append('<option value="' + frequency + '">' +	frequency + ' MHz</option>');
+				var MHz = (frequency === "OFF") ? "" : "MHz";
+				dieFreqTemplate.append('<option value="' + frequency + '">' + frequency + ' ' + MHz + '</option>');
 			});
 
 			$.each(config.enabled_asics, function(i, asic) {
@@ -131,7 +132,9 @@
 				if(!config.current_settings[asic_X_frequency]) {return false;}
 
 				for(var j = 1; j <= 4; j++) {
-					if(!config.current_settings[asic_X_voltage]['die' + j]) {return false;} 
+					if(!config.current_settings[asic_X_voltage]['die' + j]) {return false;}
+					if (config.current_settings[asic_X_frequency]['die' + j] === "")
+						config.current_settings[asic_X_frequency]['die' + j] = "OFF";
 					if(!config.current_settings[asic_X_frequency]['die' + j]) {return false;}
 				}
 			}
@@ -205,7 +208,8 @@
 					var asic_X_voltage = asic.slice(0, 4) + "_" + asic.slice(4) + '_voltage';
 					var asic_X_frequency = asic.slice(0, 4) + "_" + asic.slice(4) + '_frequency';
 					config.current_settings[asic_X_voltage]['die' + j] = $('#' + asic + '_dieVoltage' + j).val();
-					config.current_settings[asic_X_frequency]['die' + j] = $('#' + asic + '_dieFrequency' + j).val();
+					var freq = $('#' + asic + '_dieFrequency' + j).val();
+					config.current_settings[asic_X_frequency]['die' + j] = (freq && (freq !== "")) ? freq : "OFF";
 				}
 			});
 		}
